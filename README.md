@@ -1,4 +1,5 @@
 # TTII_gara_darbs
 Katrīnas un Barbaras Graudiņu Tīmekļa tehnoloģijas II gara darbs
 
-Criminal, offensive, side eye!!!
+pls, don't do anything here if you're not Katrīna or Barbara Graudiņa!
+This is our homework and I don't want to upgrade to Github Pro to see commits😢
