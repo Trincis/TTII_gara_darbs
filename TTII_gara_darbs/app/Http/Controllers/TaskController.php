@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\Project;
 use App\Models\User;
+use App\Notifications\TaskAssigned;
+use Illuminate\Support\Facades\Notification;
 
 class TaskController extends Controller
 {
@@ -33,16 +35,31 @@ class TaskController extends Controller
             'assigned_to' => 'required|exists:users,id',
             'description' => 'nullable',
             'deadline' => 'nullable|date',
+            'attachment' => 'nullable|file|max:2048', // pievienots fails
         ]);
 
-        Task::create([
+        // Ja pievienots fails, saglabā to
+        $attachmentPath = null;
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('attachments', 'public');
+        }
+
+        $task = Task::create([
             'title' => $request->title,
             'description' => $request->description,
             'status' => 'pending',
             'project_id' => $request->project_id,
             'assigned_to' => $request->assigned_to,
             'deadline' => $request->deadline,
+            'attachment_path' => $attachmentPath, // šī kolonna jābūt datubāzē
         ]);
+
+        // Nosūtīt notifikāciju uzdevuma saņēmējam
+        $user = User::find($request->assigned_to);
+        if ($user) {
+            Notification::route('mail', $user->email)
+                        ->notify(new TaskAssigned($task));
+        }
 
         return redirect()->route('tasks.index')->with('success', 'Uzdevums izveidots!');
     }
