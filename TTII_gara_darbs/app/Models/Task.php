@@ -4,14 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-// Importē trūkstošās klases
-use App\Models\Project;
-use App\Models\Comment;
-
 class Task extends Model
 {
     protected $fillable = [
-        'title', 'description', 'status', 'assigned_to', 'project_id', 'deadline'
+        'title', 'description', 'status', 'assigned_to', 'project_id', 'deadline',
     ];
 
     public function project()
@@ -19,7 +15,7 @@ class Task extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function user()
+    public function assignee()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
@@ -29,4 +25,3 @@ class Task extends Model
         return $this->hasMany(Comment::class);
     }
 }
-
